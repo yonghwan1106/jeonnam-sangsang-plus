@@ -54,13 +54,13 @@ export default async function DashboardPage() {
     .select('category')
     .eq('user_id', user.id);
 
-  const categoryCount = categoryData?.reduce((acc: any, item) => {
+  const categoryCount = categoryData?.reduce((acc: Record<string, number>, item) => {
     acc[item.category] = (acc[item.category] || 0) + 1;
     return acc;
-  }, {});
+  }, {} as Record<string, number>);
 
   const topCategory = categoryCount && Object.keys(categoryCount).length > 0
-    ? Object.entries(categoryCount).sort((a: any, b: any) => b[1] - a[1])[0][0]
+    ? Object.entries(categoryCount).sort((a: [string, number], b: [string, number]) => b[1] - a[1])[0][0]
     : null;
 
   return (
