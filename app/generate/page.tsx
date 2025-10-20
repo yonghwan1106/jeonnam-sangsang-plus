@@ -49,8 +49,9 @@ export default function GeneratePage() {
 
       const data = await response.json();
       setGeneratedIdeas(data.ideas);
-    } catch (err: any) {
-      setError(err.message || '아이디어 생성 중 오류가 발생했습니다.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : '아이디어 생성 중 오류가 발생했습니다.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -76,8 +77,9 @@ export default function GeneratePage() {
       }
 
       alert('아이디어가 저장되었습니다!');
-    } catch (err: any) {
-      alert(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : '아이디어 저장 중 오류가 발생했습니다.';
+      alert(errorMessage);
     }
   };
 

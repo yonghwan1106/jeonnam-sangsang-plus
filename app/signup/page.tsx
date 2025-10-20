@@ -64,8 +64,9 @@ export default function SignupPage() {
       setTimeout(() => {
         router.push('/login');
       }, 2000);
-    } catch (err: any) {
-      setError(err.message || '회원가입에 실패했습니다.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : '회원가입에 실패했습니다.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

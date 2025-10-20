@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@/utils/supabase/server';
 
+interface Idea {
+  title: string;
+  content: string;
+  keywords: string[];
+  probability?: number;
+}
+
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
@@ -43,7 +50,7 @@ export async function POST(request: NextRequest) {
 
 정확히 5개의 아이디어를 생성해주세요.`;
 
-    let userPrompt = `정책 분야: ${category}
+    const userPrompt = `정책 분야: ${category}
 
 문제 상황:
 ${problemStatement}`;
@@ -86,17 +93,18 @@ ${problemStatement}`;
 
     // 창의 모드일 경우 확률 추가
     if (mode === 'creative') {
-      ideas = ideas.map((idea: any) => ({
+      ideas = ideas.map((idea: Idea) => ({
         ...idea,
         probability: creativityLevel,
       }));
     }
 
     return NextResponse.json({ ideas });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error generating ideas:', error);
+    const errorMessage = error instanceof Error ? error.message : '아이디어 생성 중 오류가 발생했습니다.';
     return NextResponse.json(
-      { error: error.message || '아이디어 생성 중 오류가 발생했습니다.' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

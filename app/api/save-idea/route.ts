@@ -44,10 +44,11 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, idea: data });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error saving idea:', error);
+    const errorMessage = error instanceof Error ? error.message : '아이디어 저장 중 오류가 발생했습니다.';
     return NextResponse.json(
-      { error: error.message || '아이디어 저장 중 오류가 발생했습니다.' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
