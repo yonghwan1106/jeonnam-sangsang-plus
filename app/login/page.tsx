@@ -26,13 +26,14 @@ export default function LoginPage() {
 
       if (error) throw error;
 
+      // 로그인 성공 - 페이지 이동까지 로딩 상태 유지
       router.push('/dashboard');
       router.refresh();
+      // setLoading(false)를 호출하지 않음 - 페이지 이동 시 컴포넌트 언마운트됨
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : '로그인에 실패했습니다.';
       setError(errorMessage);
-    } finally {
-      setLoading(false);
+      setLoading(false); // 에러 발생 시에만 로딩 해제
     }
   };
 
