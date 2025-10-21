@@ -41,6 +41,12 @@ export default async function DashboardPage() {
     .eq('user_id', user.id)
     .gte('created_at', startOfMonth);
 
+  // 공유된 아이디어 개수 (전체 사용자)
+  const { count: sharedIdeas } = await supabase
+    .from('ideas')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_shared', true);
+
   // 최근 아이디어 가져오기
   const { data: recentIdeas } = await supabase
     .from('ideas')
@@ -220,20 +226,27 @@ export default async function DashboardPage() {
 
           <Link
             href="/shared-ideas"
-            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition group"
+            className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-green-600"
           >
             <div className="flex items-start gap-4">
-              <div className="text-4xl">🌐</div>
+              <div className="text-5xl group-hover:scale-110 transition-transform">🌐</div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition">
                   공유된 아이디어
                 </h3>
-                <p className="text-gray-600">
-                  다른 사람들이 공유한 아이디어를 확인합니다
+                <p className="text-gray-600 mb-4">
+                  다른 사용자들이 공유한 혁신적인 아이디어를 탐색합니다
                 </p>
-                <div className="mt-4 text-indigo-600 font-medium flex items-center gap-2">
+                <div className="text-sm text-gray-500">
+                  {sharedIdeas && sharedIdeas > 0 ? (
+                    <span>🌐 {sharedIdeas}개의 아이디어가 공유되어 있습니다</span>
+                  ) : (
+                    <span>아직 공유된 아이디어가 없습니다</span>
+                  )}
+                </div>
+                <div className="mt-4 text-green-600 font-medium flex items-center gap-2">
                   탐색하기
-                  <span className="group-hover:translate-x-1 transition">→</span>
+                  <span className="group-hover:translate-x-2 transition-transform">→</span>
                 </div>
               </div>
             </div>

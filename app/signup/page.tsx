@@ -76,12 +76,35 @@ export default function SignupPage() {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-        <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-lg text-center">
-          <div className="text-green-600 text-5xl mb-4">✓</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">회원가입 완료!</h2>
-          <p className="text-gray-600">
-            이메일을 확인해주세요. 로그인 페이지로 이동합니다...
+        <div className="max-w-lg w-full bg-white p-10 rounded-2xl shadow-2xl text-center border-4 border-green-500">
+          <div className="bg-green-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+            <div className="text-green-600 text-5xl">✓</div>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">회원가입 완료!</h2>
+
+          <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6 mb-6">
+            <div className="flex items-start gap-3">
+              <div className="text-3xl">📧</div>
+              <div className="text-left flex-1">
+                <h3 className="font-bold text-lg text-gray-900 mb-2">
+                  이메일 확인이 필요합니다!
+                </h3>
+                <p className="text-gray-700 font-medium leading-relaxed">
+                  회원가입 확인 이메일이 발송되었습니다.<br />
+                  <span className="text-red-600 font-bold">이메일을 확인하고 인증을 완료해야</span><br />
+                  정상적으로 로그인할 수 있습니다.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-gray-500 text-sm mb-4">
+            잠시 후 로그인 페이지로 이동합니다...
           </p>
+
+          <div className="text-xs text-gray-400 mt-4">
+            💡 이메일이 오지 않았나요? 스팸함을 확인해보세요.
+          </div>
         </div>
       </div>
     );
