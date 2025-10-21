@@ -52,6 +52,7 @@ export interface Database {
           probability: number | null
           keywords: string[]
           saved: boolean
+          is_shared: boolean
           created_at: string
           updated_at: string
         }
@@ -65,6 +66,7 @@ export interface Database {
           probability?: number | null
           keywords?: string[]
           saved?: boolean
+          is_shared?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -78,6 +80,7 @@ export interface Database {
           probability?: number | null
           keywords?: string[]
           saved?: boolean
+          is_shared?: boolean
           created_at?: string
           updated_at?: string
         }

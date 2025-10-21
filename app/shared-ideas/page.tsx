@@ -87,7 +87,9 @@ export default async function SharedIdeasPage() {
                 <div className="flex justify-between items-center text-sm text-gray-500 border-t pt-3 mt-3">
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-gray-700">
-                      {(idea.profiles as any)?.full_name || (idea.profiles as any)?.email || '익명'}
+                      {Array.isArray(idea.profiles)
+                        ? '익명'
+                        : (idea.profiles?.full_name || idea.profiles?.email || '익명')}
                     </span>
                     <span>•</span>
                     <span>
