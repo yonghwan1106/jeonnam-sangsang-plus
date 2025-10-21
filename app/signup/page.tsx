@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 
@@ -15,7 +14,6 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const router = useRouter();
   const supabase = createClient();
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -62,9 +60,6 @@ export default function SignupPage() {
       }
 
       setSuccess(true);
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : '회원가입에 실패했습니다.';
       setError(errorMessage);
@@ -98,9 +93,21 @@ export default function SignupPage() {
             </div>
           </div>
 
-          <p className="text-gray-500 text-sm mb-4">
-            잠시 후 로그인 페이지로 이동합니다...
-          </p>
+          <div className="space-y-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-gray-700 text-center">
+                <span className="font-semibold">1단계:</span> 이메일에서 확인 링크 클릭<br />
+                <span className="font-semibold">2단계:</span> 아래 버튼으로 로그인하기
+              </p>
+            </div>
+
+            <Link
+              href="/login"
+              className="block w-full py-3 px-4 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition text-center"
+            >
+              로그인 페이지로 이동
+            </Link>
+          </div>
 
           <div className="text-xs text-gray-400 mt-4">
             💡 이메일이 오지 않았나요? 스팸함을 확인해보세요.
