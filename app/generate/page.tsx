@@ -43,11 +43,11 @@ export default function GeneratePage() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json() as { error?: string };
         throw new Error(errorData.error || '아이디어 생성에 실패했습니다.');
       }
 
-      const data = await response.json();
+      const data = await response.json() as { ideas: GeneratedIdea[] };
       setGeneratedIdeas(data.ideas);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : '아이디어 생성 중 오류가 발생했습니다.';

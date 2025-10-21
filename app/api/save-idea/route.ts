@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 
+interface SaveIdeaRequest {
+  title: string;
+  content: string;
+  keywords?: string[];
+  category: string;
+  mode: 'general' | 'creative';
+  probability?: number;
+}
+
 export async function POST(request: NextRequest) {
   try {
     // 사용자 인증 확인
@@ -14,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 요청 데이터 파싱
-    const { title, content, keywords, category, mode, probability } = await request.json();
+    const { title, content, keywords, category, mode, probability } = await request.json() as SaveIdeaRequest;
 
     if (!title || !content || !category || !mode) {
       return NextResponse.json(

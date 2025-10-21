@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
 문제 상황:
 ${problemStatement}`;
 
+
     if (mode === 'creative') {
       systemPrompt += `\n\n**창의 탐색 모드**: 일반적이지 않고 독창적이며 혁신적인 아이디어를 생성해주세요.
 기존의 틀을 벗어나 참신하고 파격적인 접근을 시도하되, 완전히 비현실적이지는 않도록 해주세요.
@@ -89,11 +90,11 @@ ${problemStatement}`;
       throw new Error('AI 응답 형식이 올바르지 않습니다.');
     }
 
-    let ideas = JSON.parse(jsonMatch[0]);
+    let ideas: Idea[] = JSON.parse(jsonMatch[0]) as Idea[];
 
     // 창의 모드일 경우 확률 추가
     if (mode === 'creative') {
-      ideas = ideas.map((idea: Idea) => ({
+      ideas = ideas.map((idea) => ({
         ...idea,
         probability: creativityLevel,
       }));
