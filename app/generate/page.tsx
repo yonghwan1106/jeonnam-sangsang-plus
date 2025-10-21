@@ -17,7 +17,7 @@ export default function GeneratePage() {
   const [category, setCategory] = useState<PolicyCategory>('인구감소대응');
   const [problemStatement, setProblemStatement] = useState('');
   const [mode, setMode] = useState<'general' | 'creative'>('general');
-  const [creativityLevel, setCreativityLevel] = useState(10);
+  const [creativityLevel, setCreativityLevel] = useState(5); // 1(안정적) ~ 10(매우 독창적)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatedIdeas, setGeneratedIdeas] = useState<GeneratedIdea[]>([]);
@@ -38,7 +38,8 @@ export default function GeneratePage() {
           category,
           problemStatement,
           mode,
-          creativityLevel: mode === 'creative' ? creativityLevel : undefined,
+          // 레벨 1(안정적) → probability 20, 레벨 10(독창적) → probability 1
+          creativityLevel: mode === 'creative' ? 21 - creativityLevel : undefined,
         }),
       });
 
@@ -176,21 +177,31 @@ export default function GeneratePage() {
 
             {/* Creativity Level (only for creative mode) */}
             {mode === 'creative' && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  창의성 수준: {creativityLevel}%
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  독창성 레벨: <span className="text-purple-600 font-bold text-lg">{creativityLevel}</span>
                 </label>
                 <input
                   type="range"
                   min="1"
-                  max="20"
+                  max="10"
                   value={creativityLevel}
                   onChange={(e) => setCreativityLevel(parseInt(e.target.value))}
-                  className="w-full"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <span>1% (매우 독창적)</span>
-                  <span>20% (다소 독창적)</span>
+                <div className="flex justify-between text-xs text-gray-600 mt-2">
+                  <span className="flex flex-col items-start">
+                    <span className="font-semibold text-indigo-600">레벨 1</span>
+                    <span className="text-gray-500">안정적 · 실현 가능</span>
+                  </span>
+                  <span className="flex flex-col items-center">
+                    <span className="font-semibold text-purple-600">레벨 5-6</span>
+                    <span className="text-gray-500">균형잡힌</span>
+                  </span>
+                  <span className="flex flex-col items-end">
+                    <span className="font-semibold text-pink-600">레벨 10</span>
+                    <span className="text-gray-500">매우 독창적 · 혁신적</span>
+                  </span>
                 </div>
               </div>
             )}
@@ -229,8 +240,8 @@ export default function GeneratePage() {
                         {idea.title}
                       </h3>
                       {idea.probability && (
-                        <span className="text-sm px-3 py-1 bg-purple-100 text-purple-700 rounded-full">
-                          {idea.probability}%
+                        <span className="text-sm px-3 py-1 bg-purple-100 text-purple-700 rounded-full font-medium">
+                          독창성 Lv.{21 - idea.probability}
                         </span>
                       )}
                     </div>

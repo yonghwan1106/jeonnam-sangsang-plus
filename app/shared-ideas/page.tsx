@@ -63,8 +63,8 @@ export default async function SharedIdeasPage() {
                     {idea.category}
                   </span>
                   {idea.probability && (
-                    <span className="px-3 py-1 bg-purple-100 text-purple-700 text-sm rounded-full">
-                      {idea.probability}%
+                    <span className="px-3 py-1 bg-purple-100 text-purple-700 text-sm rounded-full font-medium">
+                      독창성 Lv.{21 - idea.probability}
                     </span>
                   )}
                 </div>
