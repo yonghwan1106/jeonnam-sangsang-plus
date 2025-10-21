@@ -91,7 +91,7 @@ export default function GeneratePage() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <button
             onClick={() => router.push('/dashboard')}
-            className="text-2xl font-bold text-indigo-600 hover:text-indigo-700"
+            className="text-2xl font-bold text-indigo-600 hover:text-indigo-700 hover:underline transition-all duration-200 cursor-pointer"
           >
             ← 상상 더하기+
           </button>
