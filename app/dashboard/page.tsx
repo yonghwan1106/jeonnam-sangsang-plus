@@ -53,7 +53,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Link
             href="/generate"
             className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition group"
@@ -90,6 +90,27 @@ export default async function DashboardPage() {
                 </p>
                 <div className="mt-4 text-indigo-600 font-medium flex items-center gap-2">
                   보러가기
+                  <span className="group-hover:translate-x-1 transition">→</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/shared-ideas"
+            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition group"
+          >
+            <div className="flex items-start gap-4">
+              <div className="text-4xl">🌐</div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition">
+                  공유된 아이디어
+                </h3>
+                <p className="text-gray-600">
+                  다른 사람들이 공유한 아이디어를 확인합니다
+                </p>
+                <div className="mt-4 text-indigo-600 font-medium flex items-center gap-2">
+                  탐색하기
                   <span className="group-hover:translate-x-1 transition">→</span>
                 </div>
               </div>
