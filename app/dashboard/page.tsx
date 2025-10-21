@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
+import LogoutButton from '@/components/LogoutButton';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -83,14 +84,7 @@ export default async function DashboardPage() {
                 <div className="text-xs text-gray-500">{profile.department}</div>
               )}
             </div>
-            <form action="/auth/logout" method="post">
-              <button
-                type="submit"
-                className="text-sm px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
-              >
-                로그아웃
-              </button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
       </header>
