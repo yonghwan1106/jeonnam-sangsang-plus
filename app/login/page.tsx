@@ -37,6 +37,31 @@ export default function LoginPage() {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setError(null);
+    setLoading(true);
+
+    try {
+      // 데모 계정 정보
+      const demoEmail = 'demo@jeonnam-sangsang.kr';
+      const demoPassword = 'demo123456';
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+
+      if (error) throw error;
+
+      router.push('/dashboard');
+      router.refresh();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : '데모 로그인에 실패했습니다.';
+      setError(errorMessage);
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
@@ -103,6 +128,31 @@ export default function LoginPage() {
             )}
             {loading ? '로그인 중...' : '로그인'}
           </button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">또는</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            disabled={loading}
+            className="w-full flex justify-center items-center gap-2 py-2 px-4 border-2 border-indigo-600 rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            <span className="text-lg">🚀</span>
+            {loading ? '로그인 중...' : '데모 계정으로 체험하기'}
+          </button>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <p className="text-xs text-gray-700 text-center">
+              회원가입 없이 데모 계정으로 주요 기능을 체험해보세요
+            </p>
+          </div>
 
           <div className="text-center">
             <Link

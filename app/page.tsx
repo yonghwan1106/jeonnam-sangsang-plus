@@ -14,6 +14,29 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      {/* Navigation */}
+      <nav className="bg-white/80 backdrop-blur shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold text-indigo-600 hover:text-indigo-700">
+            상상 더하기+
+          </Link>
+          <div className="flex gap-4">
+            <Link
+              href="/about"
+              className="px-4 py-2 text-gray-700 hover:text-indigo-600 transition font-medium"
+            >
+              프로젝트 소개
+            </Link>
+            <Link
+              href="/login"
+              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            >
+              로그인
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       <div className="container mx-auto px-4 py-16">
         {/* Contest Badge */}
         <div className="text-center mb-8">
@@ -35,20 +58,30 @@ export default async function Home() {
             <br />
             핵심 의사결정 지원 플랫폼
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href="/signup"
-              className="px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition"
+              className="w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition text-center"
             >
               시작하기
             </Link>
             <Link
               href="/login"
-              className="px-8 py-3 bg-white text-indigo-600 border-2 border-indigo-600 rounded-lg font-medium hover:bg-indigo-50 transition"
+              className="w-full sm:w-auto px-8 py-3 bg-white text-indigo-600 border-2 border-indigo-600 rounded-lg font-medium hover:bg-indigo-50 transition text-center"
             >
               로그인
             </Link>
+            <Link
+              href="/login"
+              className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition text-center flex items-center justify-center gap-2 shadow-lg"
+            >
+              <span className="text-lg">🚀</span>
+              데모 체험하기
+            </Link>
           </div>
+          <p className="text-sm text-gray-500 mt-4">
+            회원가입 없이 바로 체험해보세요
+          </p>
         </div>
 
         {/* Features Section */}

@@ -75,11 +75,21 @@ export default async function DashboardPage() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-indigo-600">상상 더하기+</h1>
-            <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
-              2025 전남 공모전
-            </span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <Link href="/dashboard" className="text-2xl font-bold text-indigo-600 hover:text-indigo-700">
+                상상 더하기+
+              </Link>
+              <span className="text-xs px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+                2025 전남 공모전
+              </span>
+            </div>
+            <Link
+              href="/about"
+              className="text-sm text-gray-600 hover:text-indigo-600 transition font-medium"
+            >
+              프로젝트 소개
+            </Link>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
