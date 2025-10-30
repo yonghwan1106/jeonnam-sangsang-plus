@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import { createClient } from '@/utils/supabase/server';
+import { getCurrentUser } from '@/lib/auth';
 
 interface Idea {
   title: string;
@@ -16,10 +16,7 @@ const anthropic = new Anthropic({
 export async function POST(request: NextRequest) {
   try {
     // 사용자 인증 확인
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
 
     if (!user) {
       return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 });

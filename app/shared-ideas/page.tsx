@@ -1,29 +1,30 @@
 import { redirect } from 'next/navigation';
-import { createClient } from '@/utils/supabase/server';
+import { getCurrentUser } from '@/lib/auth';
+import { ideas as ideasLib, users } from '@/lib/google-sheets';
 import Link from 'next/link';
 
 export default async function SharedIdeasPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect('/login');
   }
 
   // 공유된 아이디어 가져오기
-  const { data: ideas, error } = await supabase
-    .from('ideas')
-    .select(`
-      *,
-      profiles:user_id (
-        email,
-        full_name
-      )
-    `)
-    .eq('is_shared', true)
-    .order('created_at', { ascending: false });
+  const ideasList = await ideasLib.findShared({ order: 'desc' });
+
+  // 각 아이디어의 작성자 정보 가져오기
+  const ideasWithProfiles = await Promise.all(
+    ideasList.map(async (idea) => {
+      const author = await users.findById(idea.user_id);
+      return {
+        ...idea,
+        profiles: author ? { email: author.email, full_name: null } : null
+      };
+    })
+  );
+
+  const error = null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -49,11 +50,11 @@ export default async function SharedIdeasPage() {
 
         {error ? (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            오류가 발생했습니다: {error.message}
+            오류가 발생했습니다: {error}
           </div>
-        ) : ideas && ideas.length > 0 ? (
+        ) : ideasWithProfiles && ideasWithProfiles.length > 0 ? (
           <div className="grid md:grid-cols-2 gap-6">
-            {ideas.map((idea) => (
+            {ideasWithProfiles.map((idea) => (
               <div
                 key={idea.id}
                 className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition"

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { getCurrentUser } from '@/lib/auth';
+import { ideas } from '@/lib/google-sheets';
 
 interface SaveIdeaRequest {
   title: string;
@@ -13,10 +14,7 @@ interface SaveIdeaRequest {
 export async function POST(request: NextRequest) {
   try {
     // 사용자 인증 확인
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
 
     if (!user) {
       return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 });
@@ -33,24 +31,16 @@ export async function POST(request: NextRequest) {
     }
 
     // 데이터베이스에 저장
-    const { data, error } = await supabase
-      .from('ideas')
-      .insert({
-        user_id: user.id,
-        title,
-        content,
-        category,
-        mode,
-        probability: probability || null,
-        keywords: keywords || [],
-        saved: true,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      throw error;
-    }
+    const data = await ideas.create({
+      user_id: user.id,
+      title,
+      content,
+      category,
+      mode,
+      probability: probability || null,
+      keywords: keywords || [],
+      saved: true,
+    });
 
     return NextResponse.json({ success: true, idea: data });
   } catch (error: unknown) {

@@ -1,12 +1,10 @@
-import { createClient } from '@/utils/supabase/server';
+import { getCurrentUser } from '@/lib/auth';
+import { ideas } from '@/lib/google-sheets';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
 
     if (!user) {
       return NextResponse.json(
@@ -25,14 +23,9 @@ export async function POST(request: NextRequest) {
     }
 
     // 아이디어가 현재 사용자의 것인지 확인
-    const { data: idea, error: fetchError } = await supabase
-      .from('ideas')
-      .select('id, user_id')
-      .eq('id', ideaId)
-      .eq('user_id', user.id)
-      .single();
+    const idea = await ideas.findById(ideaId);
 
-    if (fetchError || !idea) {
+    if (!idea || idea.user_id !== user.id) {
       return NextResponse.json(
         { error: 'Idea not found or unauthorized' },
         { status: 404 }
@@ -40,15 +33,11 @@ export async function POST(request: NextRequest) {
     }
 
     // 공유 상태 업데이트
-    const { error: updateError } = await supabase
-      .from('ideas')
-      .update({ is_shared: isShared })
-      .eq('id', ideaId)
-      .eq('user_id', user.id);
+    const updatedIdea = await ideas.update(ideaId, { is_shared: isShared });
 
-    if (updateError) {
+    if (!updatedIdea) {
       return NextResponse.json(
-        { error: updateError.message },
+        { error: 'Failed to update idea' },
         { status: 500 }
       );
     }

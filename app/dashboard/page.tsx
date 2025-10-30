@@ -1,72 +1,43 @@
 import { redirect } from 'next/navigation';
-import { createClient } from '@/utils/supabase/server';
+import { getCurrentUser } from '@/lib/auth';
+import { ideas } from '@/lib/google-sheets';
 import Link from 'next/link';
 import LogoutButton from '@/components/LogoutButton';
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect('/login');
   }
 
-  // 사용자 프로필 가져오기
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
-
   // 통계 데이터 가져오기
-  const { count: totalIdeas } = await supabase
-    .from('ideas')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
-
-  const { count: savedIdeas } = await supabase
-    .from('ideas')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .eq('saved', true);
+  const allIdeas = await ideas.findByUserId(user.id);
+  const totalIdeas = allIdeas.length;
+  const savedIdeas = allIdeas.filter(idea => idea.saved).length;
 
   // 이번 달 생성된 아이디어
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const { count: monthlyIdeas } = await supabase
-    .from('ideas')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .gte('created_at', startOfMonth);
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthlyIdeas = allIdeas.filter(idea =>
+    new Date(idea.created_at) >= startOfMonth
+  ).length;
 
   // 공유된 아이디어 개수 (전체 사용자)
-  const { count: sharedIdeas } = await supabase
-    .from('ideas')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_shared', true);
+  const sharedIdeasList = await ideas.findShared();
+  const sharedIdeas = sharedIdeasList.length;
 
-  // 최근 아이디어 가져오기
-  const { data: recentIdeas } = await supabase
-    .from('ideas')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(5);
+  // 최근 아이디어 가져오기 (최대 5개)
+  const recentIdeas = await ideas.findByUserId(user.id, { order: 'desc' });
+  const recentIdeasList = recentIdeas.slice(0, 5);
 
   // 카테고리별 분포
-  const { data: categoryData } = await supabase
-    .from('ideas')
-    .select('category')
-    .eq('user_id', user.id);
-
-  const categoryCount = categoryData?.reduce((acc: Record<string, number>, item) => {
+  const categoryCount = allIdeas.reduce((acc: Record<string, number>, item) => {
     acc[item.category] = (acc[item.category] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
-  const topCategory = categoryCount && Object.keys(categoryCount).length > 0
+  const topCategory = Object.keys(categoryCount).length > 0
     ? Object.entries(categoryCount).sort((a: [string, number], b: [string, number]) => b[1] - a[1])[0][0]
     : null;
 
@@ -94,11 +65,8 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-4">
             <div className="text-right">
               <div className="text-sm font-medium text-gray-900">
-                {profile?.full_name || user.email}
+                {user.email}
               </div>
-              {profile?.department && (
-                <div className="text-xs text-gray-500">{profile.department}</div>
-              )}
             </div>
             <LogoutButton />
           </div>
@@ -111,7 +79,7 @@ export default async function DashboardPage() {
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-3xl font-bold mb-2">
-                환영합니다, {profile?.full_name || '사용자'}님! 👋
+                환영합니다, 사용자님! 👋
               </h2>
               <p className="text-lg opacity-90">
                 AI와 함께 혁신적인 정책 아이디어를 발굴해보세요
@@ -166,7 +134,7 @@ export default async function DashboardPage() {
               <div>
                 <div className="text-sm text-gray-600 mb-1">활동률</div>
                 <div className="text-3xl font-bold text-green-600">
-                  {totalIdeas && totalIdeas > 0 ? Math.round((savedIdeas! / totalIdeas!) * 100) : 0}%
+                  {totalIdeas && totalIdeas > 0 ? Math.round((savedIdeas / totalIdeas) * 100) : 0}%
                 </div>
               </div>
               <div className="text-3xl">⚡</div>
@@ -220,7 +188,7 @@ export default async function DashboardPage() {
                   저장된 아이디어를 확인하고 체계적으로 관리합니다
                 </p>
                 <div className="text-sm text-gray-500">
-                  {savedIdeas && savedIdeas > 0 ? (
+                  {savedIdeas > 0 ? (
                     <span>💾 {savedIdeas}개의 아이디어가 저장되어 있습니다</span>
                   ) : (
                     <span>아직 저장된 아이디어가 없습니다</span>
@@ -248,7 +216,7 @@ export default async function DashboardPage() {
                   다른 사용자들이 공유한 혁신적인 아이디어를 탐색합니다
                 </p>
                 <div className="text-sm text-gray-500">
-                  {sharedIdeas && sharedIdeas > 0 ? (
+                  {sharedIdeas > 0 ? (
                     <span>🌐 {sharedIdeas}개의 아이디어가 공유되어 있습니다</span>
                   ) : (
                     <span>아직 공유된 아이디어가 없습니다</span>
@@ -264,7 +232,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Recent Ideas */}
-        {recentIdeas && recentIdeas.length > 0 && (
+        {recentIdeasList && recentIdeasList.length > 0 && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-gray-900">최근 생성된 아이디어</h3>
@@ -276,7 +244,7 @@ export default async function DashboardPage() {
               </Link>
             </div>
             <div className="space-y-3">
-              {recentIdeas.map((idea) => (
+              {recentIdeasList.map((idea) => (
                 <div
                   key={idea.id}
                   className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
@@ -312,7 +280,7 @@ export default async function DashboardPage() {
         )}
 
         {/* Empty State */}
-        {(!recentIdeas || recentIdeas.length === 0) && (
+        {(!recentIdeasList || recentIdeasList.length === 0) && (
           <div className="bg-white rounded-xl shadow-lg p-12 text-center">
             <div className="text-6xl mb-4">🌟</div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">

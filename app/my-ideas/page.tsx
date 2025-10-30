@@ -1,25 +1,19 @@
 import { redirect } from 'next/navigation';
-import { createClient } from '@/utils/supabase/server';
+import { getCurrentUser } from '@/lib/auth';
+import { ideas as ideasLib } from '@/lib/google-sheets';
 import Link from 'next/link';
 import ShareToggle from '@/components/ShareToggle';
 
 export default async function MyIdeasPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
     redirect('/login');
   }
 
   // 저장된 아이디어 가져오기
-  const { data: ideas, error } = await supabase
-    .from('ideas')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('saved', true)
-    .order('created_at', { ascending: false });
+  const ideasList = await ideasLib.findByUserId(user.id, { saved: true, order: 'desc' });
+  const error = null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -40,11 +34,11 @@ export default async function MyIdeasPage() {
 
         {error ? (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            오류가 발생했습니다: {error.message}
+            오류가 발생했습니다: {error}
           </div>
-        ) : ideas && ideas.length > 0 ? (
+        ) : ideasList && ideasList.length > 0 ? (
           <div className="grid md:grid-cols-2 gap-6">
-            {ideas.map((idea) => (
+            {ideasList.map((idea) => (
               <div
                 key={idea.id}
                 className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition"

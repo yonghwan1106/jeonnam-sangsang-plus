@@ -1,8 +1,11 @@
-import { type NextRequest } from 'next/server';
-import { updateSession } from '@/utils/supabase/middleware';
+import { type NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+  // With Google Sheets auth, we use cookies for session management
+  // The middleware just passes through the request
+  return NextResponse.next({
+    request,
+  });
 }
 
 export const config = {
