@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import { ideas as ideasLib, users } from '@/lib/google-sheets';
 import Link from 'next/link';
+import PageHeader from '@/components/PageHeader';
 
 export default async function SharedIdeasPage() {
   const user = await getCurrentUser();
@@ -28,25 +29,13 @@ export default async function SharedIdeasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link
-            href="/dashboard"
-            className="text-2xl font-bold text-indigo-600 hover:text-indigo-700 hover:underline transition-all duration-200"
-          >
-            ← 상상 더하기+
-          </Link>
-        </div>
-      </header>
+      <PageHeader
+        title="공유된 아이디어"
+        description="다른 사용자들이 공유한 혁신적인 정책 아이디어를 탐색해보세요"
+        icon="🌐"
+      />
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">공유된 아이디어</h1>
-          <p className="text-gray-600">
-            다른 사용자들이 공유한 혁신적인 정책 아이디어를 탐색해보세요
-          </p>
-        </div>
 
         {error ? (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">

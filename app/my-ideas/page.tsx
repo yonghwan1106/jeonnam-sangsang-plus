@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/lib/auth';
 import { ideas as ideasLib } from '@/lib/google-sheets';
 import Link from 'next/link';
 import ShareToggle from '@/components/ShareToggle';
+import PageHeader from '@/components/PageHeader';
 
 export default async function MyIdeasPage() {
   const user = await getCurrentUser();
@@ -17,20 +18,13 @@ export default async function MyIdeasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link
-            href="/dashboard"
-            className="text-2xl font-bold text-indigo-600 hover:text-indigo-700 hover:underline transition-all duration-200"
-          >
-            ← 상상 더하기+
-          </Link>
-        </div>
-      </header>
+      <PageHeader
+        title="내 아이디어"
+        description="저장된 아이디어를 확인하고 체계적으로 관리합니다"
+        icon="📁"
+      />
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">내 아이디어</h1>
 
         {error ? (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">

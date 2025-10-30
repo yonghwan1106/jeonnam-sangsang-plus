@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { PolicyCategory, GeneratedIdea } from '@/types';
+import PageHeader from '@/components/PageHeader';
 
 const POLICY_CATEGORIES: PolicyCategory[] = [
   '인구감소대응',
@@ -13,7 +13,6 @@ const POLICY_CATEGORIES: PolicyCategory[] = [
 ];
 
 export default function GeneratePage() {
-  const router = useRouter();
   const [category, setCategory] = useState<PolicyCategory>('인구감소대응');
   const [problemStatement, setProblemStatement] = useState('');
   const [mode, setMode] = useState<'general' | 'creative'>('general');
@@ -86,23 +85,14 @@ export default function GeneratePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <button
-            onClick={() => router.push('/dashboard')}
-            className="text-2xl font-bold text-indigo-600 hover:text-indigo-700 hover:underline transition-all duration-200 cursor-pointer"
-          >
-            ← 상상 더하기+
-          </button>
-        </div>
-      </header>
+      <PageHeader
+        title="AI 정책 아이디어 생성"
+        description="Claude AI를 활용하여 창의적이고 실현 가능한 정책 아이디어를 생성합니다"
+        icon="💡"
+      />
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="bg-white rounded-xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            AI 정책 아이디어 생성
-          </h1>
 
           <form onSubmit={handleGenerate} className="space-y-6">
             {/* Category Selection */}
