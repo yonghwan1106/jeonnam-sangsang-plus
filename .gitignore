@@ -40,3 +40,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Credentials and secrets (extra protection)
+*credentials*.json
+*secret*.json
+*key*.json
